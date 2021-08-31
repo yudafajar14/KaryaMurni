@@ -29,7 +29,9 @@ import org.json.JSONObject;
 import java.util.Calendar;
 
 import static com.theqyl.karyamurni.R.drawable.cloudy;
+import static com.theqyl.karyamurni.R.drawable.drizzle;
 import static com.theqyl.karyamurni.R.drawable.fog;
+import static com.theqyl.karyamurni.R.drawable.rainy;
 
 public class MainActivity extends AppCompatActivity {
     RequestQueue requestQueue;
@@ -96,6 +98,13 @@ public class MainActivity extends AppCompatActivity {
                                 ivWeather.setImageResource(cloudy);
                             }else if(objectWeather.getString("main")=="Cloudy"){
                                 ivWeather.setImageResource(fog);
+                            }else if(objectWeather.getString("main")=="Drizzle"){
+                                ivWeather.setImageResource(drizzle);
+                            }else if(objectWeather.getString("main")=="Rain"){
+                                ivWeather.setImageResource(rainy);
+                            } else {
+                                ivWeather.setImageResource(R.drawable.sun);
+
                             }
 
 //                            Log.e("Datas", Temp + "");
