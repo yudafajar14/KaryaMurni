@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">KaryaMurni</string>
+
+    <string-array name="daftar_makanan">
+        <item>Current GPS position</item>
+        <item>gdansk</item>
+        <item>warszawa</item>
+        <item>krakow</item>
+        <item>wroclaw</item>
+        <item>lodz</item>
+
+
+    </string-array>
+
+</resources>
