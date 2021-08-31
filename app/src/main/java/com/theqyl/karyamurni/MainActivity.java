@@ -30,6 +30,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 import static com.theqyl.karyamurni.R.drawable.cloudy;
 import static com.theqyl.karyamurni.R.drawable.drizzle;
@@ -102,14 +103,13 @@ public class MainActivity extends AppCompatActivity {
                             JSONObject objectWeather = arrayWeather.getJSONObject(0);
                             tvMainWeather.setText(objectWeather.getString("main"));
                             String weather = objectWeather.getString("main");
-                            
-                            Integer timeZone = response.getInt("timezone");
-                            SimpleDateFormat curFormater = new SimpleDateFormat("dd/MM/yyyy");
-                            Date dateObj = curFormater.parse(String.valueOf(timeZone));
-                            SimpleDateFormat postFormater = new SimpleDateFormat("MMMM dd, yyyy");
 
-                            String newDateStr = postFormater.format(dateObj);
-                            tvTimeZone.setText(newDateStr);
+                            Date c = Calendar.getInstance().getTime();
+                            System.out.println("Current time => " + c);
+
+                            SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault());
+                            String formattedDate = df.format(c);
+                            tvTimeZone.setText(formattedDate);
 
                             if (weather.equals("Cloudy")) {
                                 ivWeather.setImageResource(R.drawable.cloudy);
@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
 //                            String version = response.getString("version");
 //                            Toast.makeText(MainActivity.this, message + '\n' + version , Toast.LENGTH_SHORT).show();
 //                            Toast.makeText(Home.this, version, Toast.LENGTH_SHORT).show();
-                        } catch (JSONException | ParseException e) {
+                        } catch (JSONException e) {
                             e.printStackTrace();
                         }
                     }
