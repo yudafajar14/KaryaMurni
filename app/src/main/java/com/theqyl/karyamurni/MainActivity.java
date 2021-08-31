@@ -26,7 +26,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 import static com.theqyl.karyamurni.R.drawable.cloudy;
 import static com.theqyl.karyamurni.R.drawable.drizzle;
@@ -35,9 +38,11 @@ import static com.theqyl.karyamurni.R.drawable.rainy;
 
 public class MainActivity extends AppCompatActivity {
     RequestQueue requestQueue;
-    TextView tvLocation,tvTemp,tvMainWeather;
-    Calendar c ;
+    TextView tvLocation, tvTemp, tvMainWeather, tvTimeZone;
+    Calendar c;
     ImageView ivWeather;
+    SimpleDateFormat format;
+    Date dateObj;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,12 +51,14 @@ public class MainActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
         requestQueue = Volley.newRequestQueue(this);
-        c.getInstance();
+
         Spinner spinner = findViewById(R.id.listItem);
         tvLocation = findViewById(R.id.tvLocation);
         tvTemp = findViewById(R.id.tvTemp);
         tvMainWeather = findViewById(R.id.tvMainWeather);
+        tvTimeZone = findViewById(R.id.tvTimeZone);
         ivWeather = findViewById(R.id.ivWeather);
+
 
         LinearLayout relativeLayout = findViewById(R.id.RLid);
 
@@ -80,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void parseData(String selectedItem) {
-        String url = "https://api.openweathermap.org/data/2.5/weather?q="+selectedItem+"&units=metric&APPID=0c14d9aec878a7c9928fb50320da55b2";
+        String url = "https://api.openweathermap.org/data/2.5/weather?q=" + selectedItem + "&units=metric&APPID=0c14d9aec878a7c9928fb50320da55b2";
         Log.e("URL : ", url);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
@@ -90,18 +97,28 @@ public class MainActivity extends AppCompatActivity {
                             JSONObject data = response.getJSONObject("coord");
                             String location = response.getString("name");
                             tvLocation.setText(location);
-                            tvTemp.setText(Math.round(response.getJSONObject("main").getInt("temp"))+"°");
+                            tvTemp.setText(Math.round(response.getJSONObject("main").getInt("temp")) + "°");
                             JSONArray arrayWeather = response.getJSONArray("weather");
                             JSONObject objectWeather = arrayWeather.getJSONObject(0);
                             tvMainWeather.setText(objectWeather.getString("main"));
-                            if (objectWeather.getString("main")=="Cloudy"){
-                                ivWeather.setImageResource(cloudy);
-                            }else if(objectWeather.getString("main")=="Cloudy"){
-                                ivWeather.setImageResource(fog);
-                            }else if(objectWeather.getString("main")=="Drizzle"){
-                                ivWeather.setImageResource(drizzle);
-                            }else if(objectWeather.getString("main")=="Rain"){
-                                ivWeather.setImageResource(rainy);
+                            String weather = objectWeather.getString("main");
+                            
+                            Integer timeZone = response.getInt("timezone");
+                            SimpleDateFormat curFormater = new SimpleDateFormat("dd/MM/yyyy");
+                            Date dateObj = curFormater.parse(String.valueOf(timeZone));
+                            SimpleDateFormat postFormater = new SimpleDateFormat("MMMM dd, yyyy");
+
+                            String newDateStr = postFormater.format(dateObj);
+                            tvTimeZone.setText(newDateStr);
+
+                            if (weather.equals("Cloudy")) {
+                                ivWeather.setImageResource(R.drawable.cloudy);
+                            } else if (weather.equals("Haze")) {
+                                ivWeather.setImageResource(R.drawable.fog);
+                            } else if (weather.equals("Drizzle")) {
+                                ivWeather.setImageResource(R.drawable.drizzle);
+                            } else if (weather.equals("Rain")) {
+                                ivWeather.setImageResource(R.drawable.rainy);
                             } else {
                                 ivWeather.setImageResource(R.drawable.sun);
 
@@ -114,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
 //                            String version = response.getString("version");
 //                            Toast.makeText(MainActivity.this, message + '\n' + version , Toast.LENGTH_SHORT).show();
 //                            Toast.makeText(Home.this, version, Toast.LENGTH_SHORT).show();
-                        } catch (JSONException e) {
+                        } catch (JSONException | ParseException e) {
                             e.printStackTrace();
                         }
                     }
