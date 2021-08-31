@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
                             Date c = Calendar.getInstance().getTime();
                             System.out.println("Current time => " + c);
 
-                            SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault());
+                            SimpleDateFormat df = new SimpleDateFormat("EEEE, MMMM dd", Locale.getDefault());
                             String formattedDate = df.format(c);
                             tvTimeZone.setText(formattedDate);
 
